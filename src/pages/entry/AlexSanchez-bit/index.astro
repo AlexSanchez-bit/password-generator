@@ -1,0 +1,221 @@
+---
+import Layout from '@layout'
+// import Main from '@components/AlexSanchez-bit/Main'
+---
+
+<style>
+	#main {
+		background-color: rgb(46, 17, 113);
+		padding: 30px;
+		position: fixed;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		display: flexbox;
+		box-shadow: inset 0px 0px 8px black;
+	}
+
+	.checks {
+		display: none;
+	}
+	#selectors {
+		margin-top: 30px;
+	}
+	.selectors:hover {
+		font-size: 120%;
+	}
+	.selectors {
+		color: rgb(42, 225, 121);
+		border-radius: 7px;
+		border: solid 1px green;
+		background-color: #171449a8;
+		margin: 5px;
+		text-align: center;
+		font-size: 110%;
+		padding: 3px;
+	}
+	.checks:checked + .selectors {
+		border: solid 1px #171449a8;
+		color: rgb(11, 30, 71);
+		background-color: #83ff83ad;
+	}
+
+	#size {
+		background-color: aliceblue;
+	}
+
+	#slider {
+		align: center;
+	}
+
+	#out {
+		width: 100%;
+		background-color: white;
+		margin-bottom: 30px;
+		border: 1px solid black;
+		box-shadow: inset 1px 1px 2px rgb(34, 33, 33);
+	}
+
+	#generate {
+		background-color: rgb(9, 169, 38);
+		margin: 30px;
+		border-radius: 7px;
+		border: solid 1px grey;
+		color: rgb(236, 241, 246);
+	}
+
+	#letrero {
+		color: #e2e1f6a8;
+	}
+</style>
+
+<div id='main'>
+	<div id='out'>
+		<output id='salida'>password</output>
+	</div>
+	<div id='letrero'>Password Size</div>
+	<input type='range' id='slider' min='8' max='122' value='8' />
+	<label id='size' for='slider'> 8</label>
+
+	<div id='selectors'>
+		<input type='checkbox' id='letters' class='checks' checked='true' />
+		<label class='selectors' for='letters'> letters</label>
+
+		<input type='checkbox' id='symbols' class='checks' checked='false' />
+		<label class='selectors' for='symbols'> symbols</label>
+
+		<input type='checkbox' id='numbers' class='checks' checked='false' />
+		<label class='selectors' for='numbers'> numbers</label>
+	</div>
+
+	<button id='generate'> generate password</button>
+</div>
+
+<script>
+const slider = document.getElementById('slider')
+const SizeText = document.getElementById('size')
+SizeText.innerHTML = slider.value
+const letters = document.getElementById('letters')
+const symbols = document.getElementById('symbols')
+const numbers = document.getElementById('numbers')
+let PasswSize = 8
+
+const SelectedTokens = [true, false, false]
+
+letters.onclick = function () {
+	SelectedTokens[0] = this.checked
+	check()
+}
+symbols.onclick = function () {
+	SelectedTokens[1] = this.checked
+	check()
+}
+numbers.onclick = function () {
+	SelectedTokens[2] = this.checked
+	check()
+}
+
+function check() {
+	let active = false
+	SelectedTokens.forEach((a) => {
+		active = active || a
+	})
+	if (!active) {
+		letters.checked = true
+		SelectedTokens[0] = true
+	}
+}
+
+slider.oninput = function () {
+	PasswSize = this.value
+	SizeText.innerHTML = this.value
+}
+
+const LetterMinus = [
+	'a',
+	'b',
+	'd',
+	'e',
+	'f',
+	'g',
+	'h',
+	'i',
+	'j',
+	'k',
+	'l',
+	'm',
+	'n',
+	'o',
+	'p',
+	'q',
+	'r',
+	's',
+	't',
+	'u',
+	'v',
+	'w',
+	'x',
+	'y',
+	'z'
+]
+const LetterMay = [
+	'A',
+	'B',
+	'D',
+	'E',
+	'F',
+	'G',
+	'H',
+	'I',
+	'J',
+	'K',
+	'L',
+	'M',
+	'N',
+	'O',
+	'P',
+	'Q',
+	'R',
+	'D',
+	'T',
+	'U',
+	'V',
+	'W',
+	'X',
+	'Y',
+	'Z'
+]
+const numbers_ = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0']
+const signs = ['!', '@', '#', '$', '%', '^', '&', '*', '?']
+
+const generate = () => {
+	let password = ''
+
+	for (let i = 0; i < PasswSize; i++) {
+		let added = false
+		while (!added) {
+			if (SelectedTokens[0] && Math.random() > 0.4) {
+				if (Math.random() < 0.4) {
+					password += LetterMinus[Math.floor(Math.random() * LetterMinus.length)]
+				} else {
+					password += LetterMay[Math.floor(Math.random() * LetterMay.length)]
+				}
+				added = true
+			} else if (SelectedTokens[2] && Math.random() > 0.3) {
+				password += numbers_[Math.floor(Math.random() * numbers_.length)]
+				added = true
+			} else if (SelectedTokens[1]) {
+				password += signs[Math.floor(Math.random() * signs.length)]
+				added = true
+			}
+		}
+	}
+	const out = document.getElementById('salida')
+	out.textContent = password
+	console.log(password)
+}
+
+console.log(signs)
+
+document.getElementById('generate').onclick = generate
+</script>
